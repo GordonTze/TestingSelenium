@@ -43,25 +43,22 @@ def main():
     df_url = pd.read_csv("links.txt", names=col_name)
 
     # create threads
-    t1 = threading.Thread(target = loop, args = (df_url, driver))
-    t2 = threading.Thread(target = loop, args = (df_url, driver))
-    t3 = threading.Thread(target = loop, args = (df_url, driver))
+    threads = []
 
-    print('starting thread 1')
-    t1.start()
-    time.sleep(1)
+    for i in range(5):
+        t = threading.Thread(target=loop, args=(df_url, driver))
+        threads.append(t)
 
-    print('starting thread 2')
-    t2.start()
-    time.sleep(1)
-
-    print('starting thread 3')
-    t3.start()
-
+    for idx, t in enumerate(threads):
+        print('starting thread {}'. format(idx))
+        t.start()
+        time.sleep(1)
+    
     # wait for thread to end
-    t1.join()
-    t2.join()
-    t3.join()
+    for t in threads:
+        t.join()
+
+    driver.close()
 
 if __name__ == "__main__":
     main()
